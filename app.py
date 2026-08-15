@@ -39,7 +39,7 @@ REQUESTS_BY_IP: dict[str, deque[float]] = defaultdict(deque)
 
 FORM_CONFIG = {
     "ngopie-access": {
-        "subject": "[NGO PIE] Заявка щодо доступності",
+        "subject": "[NGO PIE] Заявка на участь у майбутніх проєктах",
         "fields": (
             ("firstName", "Ім’я", 2, 100),
             ("lastName", "Прізвище", 2, 100),
@@ -47,15 +47,22 @@ FORM_CONFIG = {
             ("email", "Email", 5, 254),
         ),
     },
-    "ngopie-support": {
-        "subject": "[NGO PIE] Запит на підтримку",
+    "ngopie-psychological-support": {
+        "subject": "[NGO PIE] Звернення до психолога",
+        "fields": (
+            ("name", "Ім’я", 2, 100),
+            ("phone", "Телефон", 7, 30),
+        ),
+    },
+    "ngopie-volunteer": {
+        "subject": "[NGO PIE] Заявка волонтера",
         "fields": (
             ("name", "Ім’я", 2, 100),
             ("phone", "Телефон", 7, 30),
         ),
     },
     "ngopie-complaint": {
-        "subject": "[NGO PIE] Нове звернення",
+        "subject": "[NGO PIE] Нова скарга",
         "fields": (
             ("name", "Ім’я", 2, 100),
             ("message", "Текст звернення", 3, 4000),
@@ -103,13 +110,13 @@ def send_message(form_id: str, values: dict[str, str], config: dict) -> None:
         raise RuntimeError("SMTP configuration is incomplete")
 
     message = EmailMessage()
-    message["From"] = f"Landing forms <{SMTP_USER}>"
+    message["From"] = f"NGO PIE website <{SMTP_USER}>"
     message["To"] = MAIL_TO
     message["Subject"] = config["subject"]
     if "email" in values:
         message["Reply-To"] = values["email"]
 
-    lines = [f"Форма: {form_id}", ""]
+    lines = ["Нове звернення з ngopie.com.ua", ""]
     for key, label, _minimum, _maximum in config["fields"]:
         lines.append(f"{label}: {values[key]}")
     message.set_content("\n".join(lines))
