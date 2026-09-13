@@ -45,7 +45,7 @@ while (($#)); do
     esac
 done
 
-for command_name in git rsync curl find; do
+for command_name in git rsync curl find zip; do
     command -v "$command_name" >/dev/null 2>&1 || {
         echo "Required command is missing: $command_name" >&2
         exit 1
@@ -93,6 +93,20 @@ if [[ "$SOURCE_FILES" -lt 2 ]]; then
 fi
 
 mkdir -p "$DESTINATION"
+
+SITE_ROOT="$(dirname "$DESTINATION")"
+SITE_NAME="$(basename "$SITE_ROOT")"
+BACKUP_NAME="public_html-backup-${SITE_NAME}-$(date +%d-%m-%Y).zip"
+BACKUP_PATH="$SITE_ROOT/$BACKUP_NAME"
+BACKUP_TEMP="$TEMP_DIR/$BACKUP_NAME"
+
+echo "Backing up $DESTINATION to $BACKUP_PATH ..."
+(
+    cd "$SITE_ROOT"
+    zip -qr "$BACKUP_TEMP" "$(basename "$DESTINATION")"
+)
+mv -f -- "$BACKUP_TEMP" "$BACKUP_PATH"
+
 rsync -a --delete "$STAGING/" "$DESTINATION/"
 find "$DESTINATION" -type d -exec chmod 755 {} +
 find "$DESTINATION" -type f -exec chmod 644 {} +
