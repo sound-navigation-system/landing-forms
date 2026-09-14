@@ -19,8 +19,9 @@ deploy_ngopie() {
 }
 
 deploy_sns() {
+    GIT_SSH_COMMAND="ssh -i /home/edvin/.ssh/id_ed25519_sns_website_deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=/home/edvin/.ssh/known_hosts" \
     "$DEPLOY" \
-        --repo https://github.com/sound-navigation-system/sns-website.git \
+        --repo git@github.com:sound-navigation-system/sns-website.git \
         --ref main \
         --source public_html \
         --destination /var/www/sns.co.ua/public_html \
