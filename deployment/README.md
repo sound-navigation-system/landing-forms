@@ -13,6 +13,9 @@ sudo ./deployment/deploy-landings.sh sns
 sudo ./deployment/deploy-landings.sh all
 ```
 
+The private `sns-website` repository is fetched with its read-only deploy key
+at `/home/edvin/.ssh/id_ed25519_sns_website_deploy`.
+
 The deployer:
 
 1. clones the configured Git branch into a temporary directory;
